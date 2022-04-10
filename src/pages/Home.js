@@ -3,11 +3,13 @@ import "./Home.css";
 import { Logo } from '../images/Netflix';
 import { ConnectButton, TabList, Tab, Button, Icon, Modal } from 'web3uikit';
 import { movies } from '../helpers/library';
+import { Link } from 'react-router-dom';
+import { useMoralis } from 'react-moralis';
 
 const Home = () => {
   const [visible, setVisible] = useState(false)
   const [selectedFilm, setSelectedFilm] = useState();
-
+  const { isAutenticated } = useMoralis();
   return(
     <>
     <div className='logo'>
@@ -78,13 +80,15 @@ const Home = () => {
               <img src={selectedFilm.Scene} className='modalImg' alt='movies scene'></img>
               <img src={selectedFilm.Logo} className='modalLogo' alt='movies logo'></img>
               <div className='modalPlayButton'>
-                <Button
-                  color='red'
-                  icon='chevronRightX2'
-                  text='Play'
-                  theme='colored'
-                  type='button'
-                />
+                <Link to='/player' state={selectedFilm.Movie} style={{ textDecoration: 'none'}}>
+                  <Button
+                    color='red'
+                    icon='chevronRightX2'
+                    text='Play'
+                    theme='colored'
+                    type='button'
+                  />
+                </Link>
                 <Button
                   icon='plus'
                   text='Add to My List'
@@ -99,6 +103,13 @@ const Home = () => {
                     <span>{selectedFilm.Duration}</span>
                   </div>
                   {selectedFilm.Description}
+                </div>
+                <div className='detailedInfo'>
+                  Genre:
+                  <span className='deets'>{selectedFilm.Genre}</span>
+                  <br />
+                  Actors:
+                  <span className='deets'>{selectedFilm.Actors}</span>
                 </div>
               </div>
             </div>

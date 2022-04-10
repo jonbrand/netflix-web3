@@ -59,7 +59,7 @@
   bottom: calc(100vw * 0.55);
   left: 6vw;
   display: flex;
-  gap: 10px
+  gap: 10px;
 }
 
 .title {
@@ -131,7 +131,8 @@
   top: 500px;
   left: 6%;
   display: flex;
-  gap: 10px
+  gap: 10px;
+  text-decoration: none;
 }
 
 .details {
