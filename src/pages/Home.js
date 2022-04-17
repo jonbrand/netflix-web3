@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import "./Home.css";
 import { Logo } from '../images/Netflix';
-import { ConnectButton, TabList, Tab, Button, Icon, Modal } from 'web3uikit';
+import { ConnectButton, TabList, Tab, Button, Icon, Modal, useNotification } from 'web3uikit';
 import { movies } from '../helpers/library';
 import { Link } from 'react-router-dom';
 import { useMoralis } from 'react-moralis';
@@ -9,7 +9,19 @@ import { useMoralis } from 'react-moralis';
 const Home = () => {
   const [visible, setVisible] = useState(false)
   const [selectedFilm, setSelectedFilm] = useState();
-  const { isAutenticated } = useMoralis();
+  const { isAuthenticated } = useMoralis();
+
+  const dispatch = useNotification();
+
+  const handleNewNotification = () => {
+    dispatch({
+      type:'error',
+      message:'Please Connect Your Crypto Wallet',
+      title:'Not Authenticated',
+      position:'topL'
+    });
+  };
+
   return(
     <>
     <div className='logo'>
@@ -40,6 +52,7 @@ const Home = () => {
                 text='Add to My List'
                 theme='translucent'
                 type='button'
+                onClick={() => console.log(isAuthenticated)}
               />
             </div>
           </div>
@@ -65,8 +78,20 @@ const Home = () => {
             }
           </div>
         </Tab>
-        <Tab tabKey={2} tabName={'Series'}></Tab>
-        <Tab tabKey={3} tabName={'MyList'}></Tab>
+        <Tab tabKey={2} tabName={'Series'}>
+        <div className='ownListContent'>
+            <div className='title'>
+              Series
+            </div>
+          </div>
+        </Tab>
+        <Tab tabKey={3} tabName={'MyList'}>
+          <div className='ownListContent'>
+            <div className='title'>
+              Your Library
+            </div>
+          </div>
+        </Tab>
       </TabList>
       {selectedFilm && (
         <div className='modal'>
@@ -80,21 +105,43 @@ const Home = () => {
               <img src={selectedFilm.Scene} className='modalImg' alt='movies scene'></img>
               <img src={selectedFilm.Logo} className='modalLogo' alt='movies logo'></img>
               <div className='modalPlayButton'>
-                <Link to='/player' state={selectedFilm.Movie} style={{ textDecoration: 'none'}}>
-                  <Button
-                    color='red'
-                    icon='chevronRightX2'
-                    text='Play'
-                    theme='colored'
-                    type='button'
-                  />
-                </Link>
-                <Button
-                  icon='plus'
-                  text='Add to My List'
-                  theme='translucent'
-                  type='button'
-                />
+                {isAuthenticated ? (
+                  <>
+                    <Link to='/player' state={selectedFilm.Movie} style={{ textDecoration: 'none'}}>
+                      <Button
+                        color='red'
+                        icon='chevronRightX2'
+                        text='Play'
+                        theme='colored'
+                        type='button'
+                      />
+                    </Link>
+                    <Button
+                      icon='plus'
+                      text='Add to My List'
+                      theme='translucent'
+                      type='button'
+                    />
+                  </>
+                ) : (
+                  <>
+                      <Button
+                        color='red'
+                        icon='chevronRightX2'
+                        text='Play'
+                        theme='colored'
+                        type='button'
+                        onClick={handleNewNotification}
+                      />
+                    <Button
+                      icon='plus'
+                      text='Add to My List'
+                      theme='translucent'
+                      type='button'
+                      onClick={handleNewNotification}
+                    />
+                  </>
+                )}
               </div>
               <div className='movieInfo'>
                 <div className='description'>
